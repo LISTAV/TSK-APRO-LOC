@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map - Tinsukia</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        
+        .header {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .logo-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-area img {
+            width: 100%;
+            height: auto;
+            fill: #059669; /* Matches your success green theme */
+        }
+        h1 {
+            margin: 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        .contact-dev {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #4f46e5;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .contact-dev:hover {
+            background-color: #eef2ff;
+            font-size: 1rem;
+        }
+        .contact-dev svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+        }
+        #status-message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #059669;
+            font-weight: bold;
+        }
+        #map {
+            height: 700px; /* Made slightly taller to accommodate labels */
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid #ddd;
+        }
+
+        /* --- NEW: Custom Styling for the Permanent Text Labels --- */
+        .label-tooltip {
+            font-size: 10px;           /* Small text */
+            font-weight: 600;
+            color: #111;
+            background-color: rgba(255, 255, 255, 0.85); /* Slightly transparent */
+            border: 1px solid #999;
+            box-shadow: none;          /* Removes heavy default shadow */
+            padding: 2px 4px;
+            white-space: nowrap;       /* Keeps text on one line */
+        }
+        /* Removes the little pointer arrow on the tooltip for a cleaner look */
+        .leaflet-tooltip-left.label-tooltip::before,
+        .leaflet-tooltip-right.label-tooltip::before,
+        .leaflet-tooltip-top.label-tooltip::before,
+        .leaflet-tooltip-bottom.label-tooltip::before {
+            display: none; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-top">
+            <div class="logo-title-wrapper">
+                <div class="logo-area">
+                    <img src="apro.jpeg">
+                </div>
+                <h1>APRO Tinsukia Location Viewer</h1>
+            </div>
+
+            <a href="tel:7002035565" class="contact-dev" title="Contact Developer">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                Contact Developer
+            </a>
+        </div>
+
+        <p style="margin-top: 0; color: #555;">Default locations are loaded automatically. You can also upload a custom <code>.json</code> file to overwrite them.</p>
+        
+        <input type="file" id="fileUpload" accept=".json" />
+        <div id="status-message">Loading map...</div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="locations.js"></script>
+    
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([27.4886, 95.3558], 13);
+
+        // Add the OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Create a layer group for markers
+        let markerLayer = L.layerGroup().addTo(map);
+        const statusMessage = document.getElementById('status-message');
+
+        // Function to plot markers from an array
+        function plotLocations(locations) {
+            markerLayer.clearLayers();
+
+            locations.forEach(loc => {
+                if (loc.lat && loc.lng) {
+                    const locationName = loc.name || 'Unnamed Location';
+
+                    // Create the marker
+                    L.marker([loc.lat, loc.lng])
+                     // 1. Add the permanent small text label next to the pin
+                     .bindTooltip(locationName, {
+                         permanent: true,       // Always visible
+                         direction: 'right',    // Positioned to the right of the pin
+                         className: 'label-tooltip', // Apply our custom small CSS
+                         offset: [5, 0]        // Push it slightly away from the pin center
+                     })
+                     // 2. Keep the popup for when the user actually clicks the pin
+                     // .bindPopup(`<b>${locationName}</b><br>Lat: ${loc.lat.toFixed(5)}<br>Lng: ${loc.lng.toFixed(5)}`)
+                     .bindPopup(() => {
+    let popupContent = `<b>${locationName}</b><hr style="margin: 5px 0;">`;
+    if (loc.staff && loc.staff.length > 0) {
+        loc.staff.forEach(person => {
+            popupContent += `👤 ${person.name}<br>📞 <a href="tel:${person.phone}">${person.phone}</a><br><br>`;
+        });
+    } else {
+        popupContent += `<i>No staff data available</i>`;
+    }
+    return popupContent;
+})
+                     .addTo(markerLayer);
+                }
+            });
+
+            // Automatically zoom and pan to fit all markers
+            if (locations.length > 0) {
+                const bounds = L.latLngBounds(locations.map(loc => [loc.lat, loc.lng]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+
+        // AT STARTUP: Load from the global variable defined in tinsukia_locations.js
+        if (typeof defaultLocations !== 'undefined') {
+            plotLocations(defaultLocations);
+            statusMessage.style.color = "#059669";
+            statusMessage.innerText = "✓ Default locations loaded successfully.";
+        } else {
+            statusMessage.style.color = "#dc2626";
+            statusMessage.innerText = "⚠ Could not find default locations. Please ensure 'tinsukia_locations.js' is in the same folder.";
+        }
+
+        // Handle manual file upload 
+        document.getElementById('fileUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const locations = JSON.parse(e.target.result);
+                    plotLocations(locations);
+                    statusMessage.style.color = "#059669";
+                    statusMessage.innerText = `✓ Successfully loaded custom file: ${file.name}`;
+                } catch (error) {
+                    alert("Error reading file. Please ensure it is a valid JSON format.");
+                    console.error("JSON Parsing Error:", error);
+                }
+            };
+
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+</html>

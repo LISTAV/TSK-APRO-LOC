@@ -1,0 +1,336 @@
+[
+    {
+        "name": "TINSUKIA P.S",
+        "lat": 27.488125,
+        "lng": 95.35708,
+        "staff": []
+    },
+    {
+        "name": "Doomdooma P.S",
+        "lat": 27.5673609,
+        "lng": 95.5558115,
+        "staff": [
+            {
+                "name": "BHUSAN DEORI",
+                "phone": "9435575474"
+            },
+            {
+                "name": "BHAGIRATH GAJMER",
+                "phone": "8638145266"
+            },
+            {
+                "name": "NITESH KUMAR. SINGH",
+                "phone": "9957986590"
+            }
+        ]
+    },
+    {
+        "name": "Margherita P.S",
+        "lat": 27.289718,
+        "lng": 95.665755,
+        "staff": [
+            {
+                "name": "PANZOM DORJAY LAMA",
+                "phone": "6900029124"
+            },
+            {
+                "name": "BEDANTA GOGOI",
+                "phone": "7099484180"
+            },
+            {
+                "name": "PRONOB JYOTI GOHAIN",
+                "phone": "9678610706"
+            }
+        ]
+    },
+    {
+        "name": "DIGBOI P.S",
+        "lat": 27.390176,
+        "lng": 95.623039,
+        "staff": [
+            {
+                "name": "THAGESWAR CHANGMAI",
+                "phone": "8486617927"
+            },
+            {
+                "name": "BHUPEN GOGOI",
+                "phone": "8751064439"
+            },
+            {
+                "name": "AMON BHANDARI",
+                "phone": "9957779998"
+            }
+        ]
+    },
+    {
+        "name": "Bordumsa P.S",
+        "lat": 27.511864,
+        "lng": 95.873239,
+        "staff": [
+            {
+                "name": "BIMAL GUPTA",
+                "phone": "9954015936"
+            },
+            {
+                "name": "SAURABHJYOTI BURAGOHAIN",
+                "phone": "9678315681"
+            }
+        ]
+    },
+    {
+        "name": "MAKUM P.S",
+        "lat": 27.49209,
+        "lng": 95.44268,
+        "staff": [
+            {
+                "name": "GIRINDRA DEORI",
+                "phone": "9101067108"
+            },
+            {
+                "name": "BIJOY DEORI",
+                "phone": "7086952151"
+            },
+            {
+                "name": "SIMANTA MORAN",
+                "phone": "7635966272"
+            }
+        ]
+    },
+    {
+        "name": "Barekuri P.S",
+        "lat": 27.56452,
+        "lng": 95.39946,
+        "staff": [
+            {
+                "name": "GHANASHYAM TAID",
+                "phone": "7896472822"
+            },
+            {
+                "name": "DHARMENDRA BORGOHAIN",
+                "phone": "6003284147"
+            }
+        ]
+    },
+    {
+        "name": "BORDUBI P.S",
+        "lat": 27.398333333333333,
+        "lng": 95.251393,
+        "staff": [
+            {
+                "name": "LINTU MONI KALITA",
+                "phone": "9706207556"
+            },
+            {
+                "name": "DEVAJIT BHARALUA",
+                "phone": "7002709161"
+            }
+        ]
+    },
+    {
+        "name": "Lekhapani P.S",
+        "lat": 27.333633,
+        "lng": 95.847803,
+        "staff": [
+            {
+                "name": "KANISHK KR. SARMAH",
+                "phone": "6390667038"
+            },
+            {
+                "name": "ARUN JYOTI BORAH",
+                "phone": "8099052256"
+            }
+        ]
+    },
+    {
+        "name": "Baghjan P.S",
+        "lat": 27.593332,
+        "lng": 95.433983,
+        "staff": [
+            {
+                "name": "SUMESWAR LALUNG",
+                "phone": "8011409742"
+            },
+            {
+                "name": "ANIRBAN KAMAN",
+                "phone": "7635846535"
+            },
+            {
+                "name": "DEEP BORAH",
+                "phone": "8638231844"
+            }
+        ]
+    },
+    {
+        "name": "Kakopather P.S",
+        "lat": 27.632894,
+        "lng": 95.659358,
+        "staff": [
+            {
+                "name": "KALPAJIT GOGOI",
+                "phone": "6003110233"
+            },
+            {
+                "name": "BISHNU PRASAD PANGING",
+                "phone": "7086897976"
+            },
+            {
+                "name": "KAUSTAV LAHAN",
+                "phone": "9954504886"
+            }
+        ]
+    },
+    {
+        "name": "Phillobari P.S",
+        "lat": 27.552303,
+        "lng": 95.701697,
+        "staff": [
+            {
+                "name": "UMAKANTA CHUTIA",
+                "phone": "6000633400"
+            },
+            {
+                "name": "UJJAL DEORI",
+                "phone": "8822101370"
+            }
+        ]
+    },
+    {
+        "name": "Pengree P.S",
+        "lat": 27.437133,
+        "lng": 95.753596,
+        "staff": [
+            {
+                "name": "NILADRI HAZARIKA",
+                "phone": "6001555925"
+            },
+            {
+                "name": "MUKUL CHUTIA",
+                "phone": "9101053863"
+            }
+        ]
+    },
+    {
+        "name": "Tongana P.S",
+        "lat": 27.622844,
+        "lng": 95.732977,
+        "staff": [
+            {
+                "name": "PRAKASH SONOWAL",
+                "phone": "8403955935"
+            },
+            {
+                "name": "DIBYA DOLEY",
+                "phone": "6002445518"
+            }
+        ]
+    },
+    {
+        "name": "NA-PUKHURI O.P",
+        "lat": 27.479609,
+        "lng": 95.36969,
+        "staff": []
+    },
+    {
+        "name": "PANITOLA O.P",
+        "lat": 27.492027,
+        "lng": 95.270724,
+        "staff": [
+            {
+                "name": "CHIRANJIB GOGOI",
+                "phone": "9127423342"
+            },
+            {
+                "name": "MONTU GOGOI",
+                "phone": "7002037083"
+            }
+        ]
+    },
+    {
+        "name": "Langkashi O.P",
+        "lat": 27.383168,
+        "lng": 95.451316,
+        "staff": [
+            {
+                "name": "SANJAY CHETRY",
+                "phone": "6001966413"
+            },
+            {
+                "name": "BISWAJIT RAJKUMAR",
+                "phone": "9101744647"
+            }
+        ]
+    },
+    {
+        "name": "Talap O.P",
+        "lat": 27.6737476,
+        "lng": 95.5654673,
+        "staff": [
+            {
+                "name": "KALYAN BARUAH",
+                "phone": "9859361023"
+            },
+            {
+                "name": "FARDIN KONWAR",
+                "phone": "6000606307"
+            }
+        ]
+    },
+    {
+        "name": "LEDO O.P",
+        "lat": 27.291773,
+        "lng": 95.746194,
+        "staff": [
+            {
+                "name": "ARUN BHARALI",
+                "phone": "9401024999"
+            },
+            {
+                "name": "ARUN KUTUM",
+                "phone": "8011890823"
+            },
+            {
+                "name": "ANUP CHETIA",
+                "phone": "9957697756"
+            }
+        ]
+    },
+    {
+        "name": "JAGUN POLICE O.P",
+        "lat": 27.38235041,
+        "lng": 95.89977376,
+        "staff": [
+            {
+                "name": "NITUL CHUTIA",
+                "phone": "8472023825"
+            },
+            {
+                "name": "SUBARNA SONOWAL",
+                "phone": "8638253387"
+            }
+        ]
+    },
+    {
+        "name": "GELLAPUKHURI O.P",
+        "lat": 27.530312,
+        "lng": 95.3556,
+        "staff": []
+    },
+    {
+        "name": "HIJUGURI T.O.P",
+        "lat": 27.481537,
+        "lng": 95.339384,
+        "staff": []
+    },
+    {
+        "name": "GUIJAN P.P",
+        "lat": 27.5732,
+        "lng": 95.32401,
+        "staff": []
+    },
+    {
+        "name": "TINSUKIA CIVIL HOSPITAL P.P",
+        "lat": 27.49857,
+        "lng": 95.35868,
+        "staff": []
+    }
+]
