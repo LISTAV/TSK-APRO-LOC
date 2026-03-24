@@ -2,111 +2,320 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Interactive Map - Tinsukia</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         .header {
             background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 0;
+            flex-shrink: 0;
         }
+        
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+        
         .logo-title-wrapper {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
         }
+        
+        .logo-area {
+            flex-shrink: 0;
+        }
+        
         .logo-area img {
-            width: 100%;
-            height: auto;
-            fill: #059669; /* Matches your success green theme */
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
         }
+        
         h1 {
             margin: 0;
             color: #333;
-            font-size: 1.2rem;
+            font-size: 1rem;
+            line-height: 1.3;
+            word-break: break-word;
         }
+        
         .contact-dev {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-decoration: none;
             color: #4f46e5;
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             transition: background-color 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
+        
         .contact-dev:hover {
             background-color: #eef2ff;
-            font-size: 1rem;
         }
+        
         .contact-dev svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: currentColor;
         }
-
+        
+        .description {
+            margin: 10px 0 0 0;
+            color: #555;
+            font-size: 0.8rem;
+        }
+        
         input[type="file"] {
             display: block;
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 8px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             background: #fff;
             cursor: pointer;
+            font-size: 0.8rem;
+            width: 100%;
+            max-width: 100%;
         }
+        
         #status-message {
-            margin-top: 10px;
-            font-size: 14px;
+            margin-top: 8px;
+            font-size: 0.75rem;
             color: #059669;
             font-weight: bold;
+            word-break: break-word;
         }
+        
         #map {
-            height: 700px; /* Made slightly taller to accommodate labels */
+            flex: 1;
             width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 2px solid #ddd;
+            min-height: 300px;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
         }
-
-        /* --- NEW: Custom Styling for the Permanent Text Labels --- */
+        
+        /* Custom tooltip styling for desktop */
         .label-tooltip {
-            font-size: 10px;           /* Small text */
+            font-size: 10px;
             font-weight: 600;
             color: #111;
-            background-color: rgba(255, 255, 255, 0.85); /* Slightly transparent */
+            background-color: rgba(255, 255, 255, 0.85);
             border: 1px solid #999;
-            box-shadow: none;          /* Removes heavy default shadow */
+            box-shadow: none;
             padding: 2px 4px;
-            white-space: nowrap;       /* Keeps text on one line */
+            white-space: nowrap;
         }
-        /* Removes the little pointer arrow on the tooltip for a cleaner look */
+        
         .leaflet-tooltip-left.label-tooltip::before,
         .leaflet-tooltip-right.label-tooltip::before,
         .leaflet-tooltip-top.label-tooltip::before,
         .leaflet-tooltip-bottom.label-tooltip::before {
-            display: none; 
+            display: none;
+        }
+        
+        /* ========== SLIDE-UP PANE STYLES ========== */
+        .slideup-pane {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
+            transition: bottom 0.3s ease-out;
+            z-index: 2000;
+            max-height: 70vh;
+            overflow-y: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .slideup-pane.open {
+            bottom: 0;
+        }
+        
+        .pane-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+        
+        .pane-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #333;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .close-pane {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0 8px;
+            line-height: 1;
+        }
+        
+        .close-pane:hover {
+            color: #333;
+        }
+        
+        .pane-content {
+            padding: 16px 20px 24px;
+        }
+        
+        .staff-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .staff-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .staff-item:last-child {
+            border-bottom: none;
+        }
+        
+        .staff-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1f2937;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .staff-name::before {
+            content: "👤";
+            font-size: 1rem;
+        }
+        
+        .staff-phone {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #059669;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+        
+        .staff-phone::before {
+            content: "📞";
+            font-size: 0.85rem;
+        }
+        
+        .staff-phone:active {
+            background: #e5e7eb;
+        }
+        
+        .no-staff {
+            color: #9ca3af;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+        
+        .pane-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .pane-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .label-tooltip {
+                display: none !important;
+            }
+            
+            .leaflet-popup {
+                display: none !important;
+            }
+            
+            .header {
+                padding: 10px 12px;
+            }
+            
+            h1 {
+                font-size: 0.9rem;
+            }
+            
+            .contact-dev {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+            
+            .contact-dev svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+        
+        /* Desktop: show popups normally */
+        @media (min-width: 769px) {
+            .slideup-pane,
+            .pane-overlay {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -116,7 +325,7 @@
         <div class="header-top">
             <div class="logo-title-wrapper">
                 <div class="logo-area">
-                    <img src="apro.jpeg">
+                    <img src="apro.jpeg" alt="APRO Logo">
                 </div>
                 <h1>APRO Tinsukia Location Viewer</h1>
             </div>
@@ -125,92 +334,173 @@
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
-                Contact Developer
+                Contact
             </a>
         </div>
 
-        <p style="margin-top: 0; color: #555;">Default locations are loaded automatically. You can also upload a custom <code>.json</code> file to overwrite them.</p>
+        <p class="description">Default locations are loaded automatically. You can also upload a custom <code>.json</code> file to overwrite them.</p>
         
         <input type="file" id="fileUpload" accept=".json" />
         <div id="status-message">Loading map...</div>
     </div>
 
     <div id="map"></div>
+    
+    <!-- Slide-up Pane for Mobile -->
+    <div class="pane-overlay" id="paneOverlay"></div>
+    <div class="slideup-pane" id="slideupPane">
+        <div class="pane-header">
+            <h3 id="paneTitle">Location Name</h3>
+            <button class="close-pane" id="closePaneBtn">&times;</button>
+        </div>
+        <div class="pane-content" id="paneContent">
+            <!-- Staff list will be injected here -->
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <script src="locations.js"></script>
     
     <script>
         // Initialize the map
         const map = L.map('map').setView([27.488125, 95.357085], 18);
-
-        // Add the OpenStreetMap tiles
+        
+        // Add tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
-        // Create a layer group for markers
+        
+        // Layer group for markers
         let markerLayer = L.layerGroup().addTo(map);
         const statusMessage = document.getElementById('status-message');
-
-        // Function to plot markers from an array
+        
+        // Mobile detection
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        
+        // Pane elements
+        const slideupPane = document.getElementById('slideupPane');
+        const paneOverlay = document.getElementById('paneOverlay');
+        const paneTitle = document.getElementById('paneTitle');
+        const paneContent = document.getElementById('paneContent');
+        const closePaneBtn = document.getElementById('closePaneBtn');
+        
+        // Function to open slide-up pane
+        function openSlideupPane(locationName, staffArray) {
+            paneTitle.textContent = locationName;
+            
+            if (staffArray && staffArray.length > 0) {
+                let staffHtml = '<ul class="staff-list">';
+                staffArray.forEach(person => {
+                    staffHtml += `
+                        <li class="staff-item">
+                            <div class="staff-name">${escapeHtml(person.name)}</div>
+                            <a href="tel:${person.phone}" class="staff-phone">${person.phone}</a>
+                        </li>
+                    `;
+                });
+                staffHtml += '</ul>';
+                paneContent.innerHTML = staffHtml;
+            } else {
+                paneContent.innerHTML = '<div class="no-staff">📋 No staff data available for this location</div>';
+            }
+            
+            slideupPane.classList.add('open');
+            paneOverlay.classList.add('active');
+        }
+        
+        // Function to close slide-up pane
+        function closeSlideupPane() {
+            slideupPane.classList.remove('open');
+            paneOverlay.classList.remove('active');
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // Function to plot markers
         function plotLocations(locations) {
             markerLayer.clearLayers();
-
+            
             locations.forEach(loc => {
                 if (loc.lat && loc.lng) {
                     const locationName = loc.name || 'Unnamed Location';
-
-                    // Create the marker
-                    L.marker([loc.lat, loc.lng])
-                     // 1. Add the permanent small text label next to the pin
-                     .bindTooltip(locationName, {
-                         permanent: true,       // Always visible
-                         direction: 'right',    // Positioned to the right of the pin
-                         className: 'label-tooltip', // Apply our custom small CSS
-                         offset: [5, 0]        // Push it slightly away from the pin center
-                     })
-                     // 2. Keep the popup for when the user actually clicks the pin
-                     // .bindPopup(`<b>${locationName}</b><br>Lat: ${loc.lat.toFixed(5)}<br>Lng: ${loc.lng.toFixed(5)}`)
-                     .bindPopup(() => {
-    let popupContent = `<b>${locationName}</b><hr style="margin: 5px 0;">`;
-    if (loc.staff && loc.staff.length > 0) {
-        loc.staff.forEach(person => {
-            popupContent += `👤 ${person.name}<br>📞 <a href="tel:${person.phone}">${person.phone}</a><br><br>`;
-        });
-    } else {
-        popupContent += `<i>No staff data available</i>`;
-    }
-    return popupContent;
-})
-                     .addTo(markerLayer);
+                    const staffData = loc.staff || [];
+                    
+                    const marker = L.marker([loc.lat, loc.lng]);
+                    
+                    if (isMobile) {
+                        // Mobile: On click, open slide-up pane
+                        marker.on('click', function() {
+                            openSlideupPane(locationName, staffData);
+                        });
+                    } else {
+                        // Desktop: Use popup for staff details
+                        let popupContent = `<b>${escapeHtml(locationName)}</b><hr style="margin: 5px 0;">`;
+                        if (staffData.length > 0) {
+                            staffData.forEach(person => {
+                                popupContent += `👤 ${escapeHtml(person.name)}<br>📞 <a href="tel:${person.phone}">${person.phone}</a><br><br>`;
+                            });
+                        } else {
+                            popupContent += `<i>No staff data available</i>`;
+                        }
+                        marker.bindPopup(popupContent);
+                        
+                        // Also add permanent tooltip with location name
+                        marker.bindTooltip(locationName, {
+                            permanent: true,
+                            direction: 'right',
+                            className: 'label-tooltip',
+                            offset: [5, 0]
+                        });
+                    }
+                    
+                    marker.addTo(markerLayer);
                 }
             });
-
-            // Automatically zoom and pan to fit all markers
-            if (locations.length > 0) {
-                const bounds = L.latLngBounds(locations.map(loc => [loc.lat, loc.lng]));
+            
+            // Auto-zoom to fit all markers
+            const validLocations = locations.filter(loc => loc.lat && loc.lng);
+            if (validLocations.length > 0) {
+                const bounds = L.latLngBounds(validLocations.map(loc => [loc.lat, loc.lng]));
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
         }
-
-        // AT STARTUP: Load from the global variable defined in tinsukia_locations.js
+        
+        // Close pane handlers
+        closePaneBtn.addEventListener('click', closeSlideupPane);
+        paneOverlay.addEventListener('click', closeSlideupPane);
+        
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && slideupPane.classList.contains('open')) {
+                closeSlideupPane();
+            }
+        });
+        
+        // Load default locations
         if (typeof defaultLocations !== 'undefined') {
             plotLocations(defaultLocations);
             statusMessage.style.color = "#059669";
             statusMessage.innerText = "✓ Default locations loaded successfully.";
         } else {
             statusMessage.style.color = "#dc2626";
-            statusMessage.innerText = "⚠ Could not find default locations. Please ensure 'tinsukia_locations.js' is in the same folder.";
+            statusMessage.innerText = "⚠ Could not find default locations. Please ensure 'locations.js' is in the same folder.";
         }
-
-        // Handle manual file upload 
+        
+        // Handle file upload
         document.getElementById('fileUpload').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
-
+            
             const reader = new FileReader();
             
             reader.onload = function(e) {
@@ -219,15 +509,26 @@
                     plotLocations(locations);
                     statusMessage.style.color = "#059669";
                     statusMessage.innerText = `✓ Successfully loaded custom file: ${file.name}`;
+                    // Close pane if open
+                    closeSlideupPane();
                 } catch (error) {
                     alert("Error reading file. Please ensure it is a valid JSON format.");
                     console.error("JSON Parsing Error:", error);
                 }
             };
-
+            
             reader.readAsText(file);
+        });
+        
+        // Listen for orientation/resize changes to adjust behavior
+        window.matchMedia('(max-width: 768px)').addEventListener('change', (e) => {
+            // Reload markers to update click behavior
+            if (typeof defaultLocations !== 'undefined') {
+                plotLocations(defaultLocations);
+            }
+            // Close pane if it was open
+            closeSlideupPane();
         });
     </script>
 </body>
-
 </html>
